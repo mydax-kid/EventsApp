@@ -3,7 +3,8 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { Button } from "@/components/ui/button"
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { Form, FormControl, FormDescription, FormField,
+         FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { eventFormSchema } from "@/lib/validator"
 import * as z from 'zod'
@@ -32,6 +33,10 @@ type EventFormProps = {
 
 const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
   const [files, setFiles] = useState<File[]>([])
+  const router = useRouter();
+
+  const { startUpload } = useUploadThing('imageUploader')
+
   const initialValues = event && type === 'Update' 
     ? { 
       ...event, 
@@ -39,15 +44,14 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
       endDateTime: new Date(event.endDateTime) 
     }
     : eventDefaultValues;
-  const router = useRouter();
 
-  const { startUpload } = useUploadThing('imageUploader')
 
   const form = useForm<z.infer<typeof eventFormSchema>>({
     resolver: zodResolver(eventFormSchema),
     defaultValues: initialValues
   })
  
+  //SUBMIT FORM TO THE DB
   async function onSubmit(values: z.infer<typeof eventFormSchema>) {
     let uploadedImageUrl = values.imageUrl;
 

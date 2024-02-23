@@ -15,13 +15,12 @@ import { useEffect, useState } from "react";
 
 const CategoryFilter = () => {
   const [categories, setCategories] = useState<ICategory[]>([]);
-  const router = useRouter();
   const searchParams = useSearchParams();
+  const router = useRouter();
 
   useEffect(() => {
     const getCategories = async () => {
       const categoryList = await getAllCategories();
-
       categoryList && setCategories(categoryList as ICategory[])
     }
 
@@ -60,6 +59,7 @@ const CategoryFilter = () => {
             {category.name}
           </SelectItem>
         ))}
+        
       </SelectContent>
     </Select>
   )

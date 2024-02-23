@@ -17,6 +17,8 @@ import {
   GetRelatedEventsByCategoryParams,
 } from '@/types'
 
+
+
 const getCategoryByName = async (name: string) => {
   return Category.findOne({ name: { $regex: name, $options: 'i' } })
 }
@@ -100,9 +102,11 @@ export async function getAllEvents({ query, limit = 6, page, category }: GetAllE
     await connectToDatabase()
 
     const titleCondition = query ? { title: { $regex: query, $options: 'i' } } : {}
-    const categoryCondition = category ? await getCategoryByName(category) : null
+    const categoryFetch = category ? await getCategoryByName(category) : null
+    const categoryCondition = categoryFetch ? { category: categoryFetch._id } : {}
+
     const conditions = {
-      $and: [titleCondition, categoryCondition ? { category: categoryCondition._id } : {}],
+      $and: [ titleCondition, categoryCondition ]
     }
 
     const skipAmount = (Number(page) - 1) * limit
@@ -167,7 +171,8 @@ export async function getRelatedEventsByCategory({
     const eventsCount = await Event.countDocuments(conditions)
 
     return { data: JSON.parse(JSON.stringify(events)), totalPages: Math.ceil(eventsCount / limit) }
-  } catch (error) {
+  } 
+  catch (error) {
     handleError(error)
   }
 }

@@ -1,7 +1,8 @@
 "use server"
 
 import Stripe from 'stripe';
-import { CheckoutOrderParams, CreateOrderParams, GetOrdersByEventParams, GetOrdersByUserParams } from "@/types"
+import { CheckoutOrderParams, CreateOrderParams,
+         GetOrdersByEventParams, GetOrdersByUserParams } from "@/types"
 import { redirect } from 'next/navigation';
 import { handleError } from '../utils';
 import { connectToDatabase } from '../database';
@@ -10,9 +11,10 @@ import Event from '../database/models/event.model';
 import {ObjectId} from 'mongodb';
 import User from '../database/models/user.model';
 
+
+//STRIPE CHECKOUT
 export const checkoutOrder = async (order: CheckoutOrderParams) => {
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
-
   const price = order.isFree ? 0 : Number(order.price) * 100;
 
   try {
@@ -44,6 +46,7 @@ export const checkoutOrder = async (order: CheckoutOrderParams) => {
   }
 }
 
+//CREATE NEW ORDER
 export const createOrder = async (order: CreateOrderParams) => {
   try {
     await connectToDatabase();
@@ -60,7 +63,7 @@ export const createOrder = async (order: CreateOrderParams) => {
   }
 }
 
-// GET ORDERS BY EVENT
+// GET ORDERS BY EVENT(how many tickets have been sold for a specific event)
 export async function getOrdersByEvent({ searchString, eventId }: GetOrdersByEventParams) {
   try {
     await connectToDatabase()
@@ -116,7 +119,7 @@ export async function getOrdersByEvent({ searchString, eventId }: GetOrdersByEve
   }
 }
 
-// GET ORDERS BY USER
+// GET ORDERS BY USER(tickets that a user has bought)
 export async function getOrdersByUser({ userId, limit = 3, page }: GetOrdersByUserParams) {
   try {
     await connectToDatabase()
@@ -142,7 +145,8 @@ export async function getOrdersByUser({ userId, limit = 3, page }: GetOrdersByUs
     const ordersCount = await Order.distinct('event._id').countDocuments(conditions)
 
     return { data: JSON.parse(JSON.stringify(orders)), totalPages: Math.ceil(ordersCount / limit) }
-  } catch (error) {
+  }
+  catch (error) {
     handleError(error)
   }
 }

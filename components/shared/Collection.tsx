@@ -23,6 +23,7 @@ const Collection = ({
   collectionType,
   urlParamName,
 }: CollectionProps) => {
+
   return (
     <>
       {data.length > 0 ? (
@@ -52,6 +53,7 @@ const Collection = ({
       )} 
     </>
   )
+  
 }
 
 export default Collection
