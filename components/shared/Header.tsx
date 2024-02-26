@@ -9,11 +9,13 @@ const Header = () => {
   return (
     <header className="w-full border-b">
       <div className="wrapper flex items-center justify-between">
-        <Link href="/" className="w-36">
+        <Link href="/" className="w-36 flex items-center gap-2">
           <Image 
-            src="/assets/images/logo.svg" width={128} height={38}
+            src="/assets/images/favicon.png" width={50} height={32}
             alt="Evently logo" 
+            className="rounded-sm"
           />
+          <h1 className="font-bold text-2xl">Eventa</h1>
         </Link>
 
         <SignedIn>
